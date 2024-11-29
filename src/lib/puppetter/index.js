@@ -32,6 +32,7 @@ export class Puppeter {
   async login() {
     try {
       console.log('✅ Llenando formulario de inicio de sesión...')
+      // TODO: Change this to your credentials
       await this.page.type('#id_document', '63513383')
       await this.page.type('#id_password', 'Buc63513383')
 
