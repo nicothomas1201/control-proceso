@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer-core'
 import { nameDocumental } from '../utils'
-import chromium from 'chrome-aws-lambda'
+import chromium from '@sparticuz/chromium'
 // import fs from 'fs'
 
 // const zipsPath = `${process.cwd()}/src/storage/zip`
@@ -12,8 +12,10 @@ export class Puppeter {
   async launch() {
     this.browser = await puppeteer.launch({
       args: chromium.args,
-      executablePath: await chromium.executablePath,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
       headless: chromium.headless,
+      ignoreHTTPSErrors: true,
     }) // `headless: false` para ver el navegador
     this.page = await this.browser.newPage()
 
