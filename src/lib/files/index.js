@@ -19,7 +19,8 @@ export class FilesService {
   outputDir = null
 
   constructor() {
-    this.basepath = process.cwd() + '/src'
+    this.basepath = process.cwd() + '/tmp'
+    // this.basepath = process.cwd() + '/src' // TODO: Descomentar para desarrollo
     this.filesPath = `${this.basepath}/storage`
     this.outputDir = `${this.filesPath}/des`
   }
