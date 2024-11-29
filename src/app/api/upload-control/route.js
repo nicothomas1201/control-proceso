@@ -5,13 +5,13 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request) {
+  const filesService = new FilesService()
+
   try {
     const cookiesStore = await cookies()
     const supabase = createClient(cookiesStore)
 
     const { expediente, notebook, filePath } = await request.json()
-
-    const filesService = new FilesService()
 
     const { data: file, error } = await supabase.storage
       .from('procesos')
