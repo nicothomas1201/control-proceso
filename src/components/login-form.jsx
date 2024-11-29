@@ -16,6 +16,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { LoaderCircle } from 'lucide-react'
 import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
   document: z.string().min(2).max(30),
@@ -24,7 +26,9 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const [loading, setLoading] = useState(false)
-  // 1. Define your form.
+  const router = useRouter()
+  const supabase = createClient()
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,10 +37,42 @@ export function LoginForm() {
     },
   })
 
-  // 2. Define a submit handler.
-  function onSubmit(values) {
-    setLoading(true)
-    console.log(values)
+  async function onSubmit(values) {
+    try {
+      setLoading(true)
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('document', values.document)
+        .single()
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      if (user.password === null) {
+        const { error: updateError } = await supabase
+          .from('users')
+          .eq('document', values.document)
+          .update({ password: values.password })
+
+        if (updateError) {
+          throw new Error(updateError.message)
+        }
+
+        router.push('/home')
+      }
+
+      if (user.password === values.password) {
+        router.push('/home')
+      } else {
+        throw new Error('Contraseña incorrecta')
+      }
+    } catch (error) {
+      console.error('An error ocurred', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
