@@ -28,20 +28,32 @@ export class FilesService {
 
   async writeZipFile(expediente, notebook, buffer) {
     try {
-      const zipsPath = `${this.filesPath}/zip/${expediente}`
+      // Construir ruta del directorio y archivo usando path
+      const zipsPath = path.join(this.filesPath, 'zip', expediente)
+      const zipFilePath = path.join(zipsPath, `${notebook}.zip`)
+
+      // Crear directorio de forma recursiva si no existe
       if (!fs.existsSync(zipsPath)) {
-        fs.mkdirSync(zipsPath)
+        fs.mkdirSync(zipsPath, { recursive: true })
+        console.log(`Directorio creado: ${zipsPath}`)
       }
 
-      if (fs.existsSync(zipsPath + `/${notebook}.zip`)) {
-        console.log('El archivo ya existe')
+      // Verificar si el archivo ya existe
+      if (fs.existsSync(zipFilePath)) {
+        console.log(`El archivo ya existe: ${zipFilePath}`)
         return
       }
 
-      fs.writeFileSync(zipsPath + `/${notebook}.zip`, buffer)
-      console.log('Archivo creado y datos escritos con éxito')
+      // Validar el buffer antes de escribir
+      if (!buffer || !Buffer.isBuffer(buffer)) {
+        throw new Error('El buffer proporcionado no es válido')
+      }
+
+      // Escribir el archivo en el sistema
+      fs.writeFileSync(zipFilePath, buffer)
+      console.log(`Archivo creado y datos escritos con éxito: ${zipFilePath}`)
     } catch (err) {
-      console.error('Error al crear el archivo:', err)
+      console.error('Error al crear el archivo:', err.message)
     }
   }
 
