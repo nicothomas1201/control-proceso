@@ -193,7 +193,7 @@ export class Puppeter {
         // Espera a que el modal aparezca
         await this.page.waitForSelector(modalSelector, {
           visible: true,
-          timeout: 3000,
+          timeout: 1500,
         })
         console.log('Modal visible')
         return // Si se encuentra el modal, termina la función

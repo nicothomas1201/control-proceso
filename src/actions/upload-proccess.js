@@ -13,22 +13,28 @@ const zipsPath = `${process.cwd()}/src/storage/zip`
 
 export async function automateProccess({ expediente, notebook, file }) {
   const filesService = new FilesService()
-  const automatic = new Puppeter()
+  try {
+    const automatic = new Puppeter()
 
-  const buffer = Buffer.from(await file.arrayBuffer())
+    const buffer = Buffer.from(await file.arrayBuffer())
 
-  filesService.writeZipFile(expediente, notebook, buffer)
-  await filesService.decompressFile(expediente, notebook)
+    filesService.writeZipFile(expediente, notebook, buffer)
+    await filesService.decompressFile(expediente, notebook)
 
-  await automatic.launch()
-  await automatic.searchExpediente(expediente)
-  await automatic.searchNotebook(notebook)
+    await automatic.launch()
+    await automatic.searchExpediente(expediente)
+    await automatic.searchNotebook(notebook)
 
-  const uploadDocs = filesService.getDirFiles(expediente, notebook)
-  const retrictExt = ['xlsm', 'xlsx']
-  await automatic.createAllDocuments(
-    uploadDocs.filter((doc) => !retrictExt.includes(doc.ext)),
-  )
+    const uploadDocs = filesService.getDirFiles(expediente, notebook)
+    const retrictExt = ['xlsm', 'xlsx']
+    await automatic.createAllDocuments(
+      uploadDocs.filter((doc) => !retrictExt.includes(doc.ext)),
+    )
+  } catch (err) {
+    console.log(err)
+  } finally {
+    await filesService.deleteFolder(expediente)
+  }
 
   // await automatic.uploadFile(file)
   // await automatic.close()

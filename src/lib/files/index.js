@@ -112,4 +112,18 @@ export class FilesService {
       console.error(`❌ Error al descomprimir el archivo: ${error.message}`)
     }
   }
+
+  async deleteFolder(expediente) {
+    const folderPath = `${this.outputDir}/${expediente}`
+    const zipsPath = `${this.filesPath}/zip/${expediente}`
+    if (fs.existsSync(folderPath)) {
+      fs.rmdirSync(folderPath, { recursive: true })
+      console.log(`✅ Carpeta des "${expediente}" eliminada con éxito.`)
+    }
+
+    if (fs.existsSync(zipsPath)) {
+      fs.rmdirSync(zipsPath, { recursive: true })
+      console.log(`✅ Carpeta zip "${expediente}" eliminada con éxito.`)
+    }
+  }
 }
