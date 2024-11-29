@@ -43,7 +43,7 @@ export class Puppeter {
       }) // Cambia esto a un selector de la página posterior al login
       console.log('🎉 Inicio de sesión completado.')
     } catch (error) {
-      console.error('❌ Error en el inicio de sesión:', error)
+      console.error('❌ Error en el inicio de sesión:', error.message)
       throw new Error('Error en el inicio de sesión')
     }
   }
@@ -70,7 +70,7 @@ export class Puppeter {
         visible: true,
       })
     } catch (error) {
-      console.error('❌ Error al buscar el expediente:', error)
+      console.error('❌ Error al buscar el expediente:', error.message)
       throw new Error('Error al buscar el expediente')
     }
   }
@@ -174,7 +174,7 @@ export class Puppeter {
       await this.page.click('button::-p-text("Aceptar")')
       console.log('Click aceptar realizado con éxito')
     } catch (error) {
-      console.log(error)
+      console.log(error.message)
     }
   }
 

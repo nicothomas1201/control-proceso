@@ -51,10 +51,19 @@ export function HomeForm() {
 
   async function onSubmit(values) {
     try {
-      await automateProccess({
-        expediente: values.expediente,
-        notebook: values.notebook,
-        file: values.files,
+      // await automateProccess({
+      //   expediente: values.expediente,
+      //   notebook: values.notebook,
+      //   file: values.files,
+      // })
+      const formData = new FormData()
+      formData.append('expediente', values.expediente)
+      formData.append('notebook', values.notebook)
+      formData.append('file', values.files)
+
+      await fetch('/api/upload-control', {
+        method: 'POST',
+        body: formData,
       })
     } catch (err) {
       console.log(err)

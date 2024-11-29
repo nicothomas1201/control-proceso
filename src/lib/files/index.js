@@ -1,5 +1,6 @@
 import fs from 'fs'
 import AdmZip from 'adm-zip'
+import archiver from 'archiver'
 
 // const { expediente } = await inquirer.prompt([
 //   {
@@ -24,24 +25,23 @@ export class FilesService {
     this.outputDir = `${this.filesPath}/des`
   }
 
-  writeZipFile(expediente, notebook, buffer) {
-    const zipsPath = `${this.filesPath}/zip/${expediente}`
-    if (!fs.existsSync(zipsPath)) {
-      fs.mkdirSync(zipsPath)
-    }
-
-    if (fs.existsSync(zipsPath + `/${notebook}.zip`)) {
-      console.log('El archivo ya existe')
-      return
-    }
-
-    fs.writeFile(zipsPath + `/${notebook}.zip`, buffer, (err) => {
-      if (err) {
-        console.error('Error al crear el archivo:', err)
-      } else {
-        console.log('Archivo creado y datos escritos con éxito')
+  async writeZipFile(expediente, notebook, buffer) {
+    try {
+      const zipsPath = `${this.filesPath}/zip/${expediente}`
+      if (!fs.existsSync(zipsPath)) {
+        fs.mkdirSync(zipsPath)
       }
-    })
+
+      if (fs.existsSync(zipsPath + `/${notebook}.zip`)) {
+        console.log('El archivo ya existe')
+        return
+      }
+
+      fs.writeFileSync(zipsPath + `/${notebook}.zip`, buffer)
+      console.log('Archivo creado y datos escritos con éxito')
+    } catch (err) {
+      console.error('Error al crear el archivo:', err)
+    }
   }
 
   getDirFiles(exp, notebook) {
@@ -99,11 +99,13 @@ export class FilesService {
         )
       }
 
-      await zip.extractAllTo(`${this.outputDir}/${expediente}`, true)
+      zip.extractAllTo(`${this.outputDir}/${expediente}`, true)
 
-      if (oldFolderName !== notebook) {
-        this.renameExtractedFiles(oldFolderName, notebook, expediente)
-      }
+      setTimeout(() => {
+        if (oldFolderName !== notebook) {
+          this.renameExtractedFiles(oldFolderName, notebook, expediente)
+        }
+      }, 800)
 
       console.log(
         `✅ Archivo "${expediente}" descomprimido exitosamente en "${`${this.outputDir}/${expediente}`}".`,

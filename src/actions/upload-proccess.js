@@ -33,7 +33,7 @@ export async function automateProccess({ expediente, notebook, file }) {
   } catch (err) {
     console.log(err)
   } finally {
-    await filesService.deleteFolder(expediente)
+    // await filesService.deleteFolder(expediente)
   }
 
   // await automatic.uploadFile(file)
