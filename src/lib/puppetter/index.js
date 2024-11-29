@@ -14,7 +14,7 @@ export class Puppeter {
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+      headless: false,
       ignoreHTTPSErrors: true,
     }) // `headless: false` para ver el navegador
     this.page = await this.browser.newPage()
