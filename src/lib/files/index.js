@@ -1,6 +1,5 @@
 import fs from 'fs'
 import AdmZip from 'adm-zip'
-import archiver from 'archiver'
 
 // const { expediente } = await inquirer.prompt([
 //   {
