@@ -1,16 +1,33 @@
 import { NextResponse } from 'next/server'
 import { Puppeter } from '@/lib/puppetter'
 import { FilesService } from '@/lib/files'
+import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request) {
-  const formData = await request.formData()
-
-  const expediente = formData.get('expediente')
-  const notebook = formData.get('notebook')
-  const file = formData.get('file')
-
-  const filesService = new FilesService()
   try {
+    const cookiesStore = await cookies()
+    const supabase = createClient(cookiesStore)
+
+    const { expediente, notebook, filePath } = await request.json()
+
+    const filesService = new FilesService()
+
+    const { data: file, error } = await supabase.storage
+      .from('procesos')
+      .download(filePath)
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    if (!file) {
+      return NextResponse.json(
+        { error: 'No se encontró el archivo' },
+        { status: 404 },
+      )
+    }
+
     const automatic = new Puppeter()
 
     const buffer = Buffer.from(await file.arrayBuffer())

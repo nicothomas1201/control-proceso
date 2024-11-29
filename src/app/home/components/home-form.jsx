@@ -19,6 +19,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { automateProccess } from '@/actions/upload-proccess'
+// import { createClient } from '@/lib/supabase/client'
 
 const formSchema = z.object({
   expediente: z.string().min(2).max(50),
@@ -37,6 +38,7 @@ const formSchema = z.object({
 
 export function HomeForm() {
   const [loading, setLoading] = useState(false)
+  const supabase = createClient()
   // const router = useRouter()
   // const supabase = createClient()
 
@@ -56,17 +58,38 @@ export function HomeForm() {
       //   notebook: values.notebook,
       //   file: values.files,
       // })
+
       const formData = new FormData()
+
       formData.append('expediente', values.expediente)
       formData.append('notebook', values.notebook)
       formData.append('file', values.files)
 
-      await fetch('/api/upload-control', {
-        method: 'POST',
-        body: formData,
-      })
+      setLoading(true)
+      const { data, error } = await supabase.storage
+        .from('procesos')
+        .upload(`${values.expediente}/${values.notebook}.zip`, values.files, {
+          upsert: true,
+        })
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      if (data) {
+        await fetch('/api/upload-control', {
+          method: 'POST',
+          body: JSON.stringify({
+            expediente: values.expediente,
+            notebook: values.notebook,
+            filePath: data.path,
+          }),
+        })
+      }
     } catch (err) {
       console.log(err)
+    } finally {
+      setLoading(false)
     }
   }
 
