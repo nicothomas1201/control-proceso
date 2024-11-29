@@ -14,7 +14,7 @@ export class Puppeter {
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
-      headless: false,
+      headless: chromium.headless,
       ignoreHTTPSErrors: true,
     }) // `headless: false` para ver el navegador
     this.page = await this.browser.newPage()
@@ -83,12 +83,14 @@ export class Puppeter {
   }
 
   async searchNotebook(notebook) {
+    console.log(`🔍 Buscando cuaderno: ${notebook}...`)
     await this.page.type('input[type="text"]', notebook)
     await this.page.click('button[type="submit"]')
     await this.page.waitForSelector(`text/${notebook}`, {
       visible: true,
     })
     await this.page.locator(`text/${notebook}`).click()
+    console.log('🎉 Cuaderno encontrado')
   }
 
   async clickCreateDocument() {
@@ -200,7 +202,7 @@ export class Puppeter {
         // Espera a que el modal aparezca
         await this.page.waitForSelector(modalSelector, {
           visible: true,
-          timeout: 1500,
+          timeout: 3000,
         })
         console.log('Modal visible')
         return // Si se encuentra el modal, termina la función
@@ -307,6 +309,7 @@ export class Puppeter {
   async createAllDocuments(docs) {
     let i = 0
     while (i < docs.length) {
+      console.log('Create document ', docs[i].name)
       await this.createDocument(docs[i])
       i++
     }
