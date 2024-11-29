@@ -106,7 +106,7 @@ export class FilesService {
       const oldFolderName = zipEntries[0].entryName.split('/')[0]
 
       if (!fs.existsSync(path.join(this.outputDir, expediente))) {
-        fs.mkdirSync(path.join(this.outputDir, expediente))
+        fs.mkdirSync(path.join(this.outputDir, expediente), { recursive: true })
         console.log(
           `📂 Carpeta de destino creada: "${`${this.outputDir}/${expediente}`}".`,
         )
