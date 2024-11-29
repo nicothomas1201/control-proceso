@@ -23,7 +23,7 @@ export class FilesService {
     this.basepath = path.join('/tmp')
     // this.basepath = process.cwd() + '/src' // TODO: Descomentar para desarrollo
     this.filesPath = path.join('/tmp', 'storage')
-    this.outputDir = path.join(this.basepath, 'des')
+    this.outputDir = path.join(this.filesPath, 'des')
   }
 
   async writeZipFile(expediente, notebook, buffer) {
