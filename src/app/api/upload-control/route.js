@@ -6,12 +6,11 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request) {
   const filesService = new FilesService()
+  const { expediente, notebook, filePath } = await request.json()
 
   try {
     const cookiesStore = await cookies()
     const supabase = createClient(cookiesStore)
-
-    const { expediente, notebook, filePath } = await request.json()
 
     const { data: file, error } = await supabase.storage
       .from('procesos')

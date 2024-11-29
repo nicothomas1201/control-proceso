@@ -1,5 +1,6 @@
 import fs from 'fs'
 import AdmZip from 'adm-zip'
+import path from 'path'
 
 // const { expediente } = await inquirer.prompt([
 //   {
@@ -19,10 +20,10 @@ export class FilesService {
   outputDir = null
 
   constructor() {
-    this.basepath = process.cwd() + '/tmp'
+    this.basepath = path.join('/tmp')
     // this.basepath = process.cwd() + '/src' // TODO: Descomentar para desarrollo
-    this.filesPath = `${this.basepath}/storage`
-    this.outputDir = `${this.filesPath}/des`
+    this.filesPath = path.join('/tmp', 'storage')
+    this.outputDir = path.join(this.basepath, 'des')
   }
 
   async writeZipFile(expediente, notebook, buffer) {
