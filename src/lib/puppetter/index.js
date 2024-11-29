@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer-core'
 import { nameDocumental } from '../utils'
 import Chromium from 'chrome-aws-lambda'
 // import fs from 'fs'
